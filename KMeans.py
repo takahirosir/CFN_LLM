@@ -1,3 +1,14 @@
+'''
+To simulate graph-based clustering using the k-means algorithm on a random graph, you can follow these steps:
+Generate a random graph using NetworkX.
+Retrieve the node positions from the graph.
+Apply the k-means algorithm to cluster the nodes based on their positions.
+Visualize the clusters.
+Here's the Python code that implements this simulation:
+
+'''
+
+
 import networkx as nx
 import numpy as np
 from sklearn.cluster import KMeans
