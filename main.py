@@ -1,35 +1,37 @@
 import networkx as nx
-import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 
-# Random graph simulation
-def simulate_random_graph(num_nodes, num_edges):
+# Generate a random graph
+def generate_random_graph(num_nodes, num_edges):
     G = nx.gnm_random_graph(num_nodes, num_edges)
     return G
 
-# Perform k-means clustering on the graph
+# Perform k-means clustering on node positions
 def perform_kmeans_clustering(graph, num_clusters):
-    # Get the adjacency matrix of the graph
-    adjacency_matrix = nx.adjacency_matrix(graph)
-
-    # Perform k-means clustering on the adjacency matrix
+    node_positions = nx.spring_layout(graph)
+    positions = np.array(list(node_positions.values()))
     kmeans = KMeans(n_clusters=num_clusters)
-    kmeans.fit(adjacency_matrix)
+    kmeans.fit(positions)
+    return kmeans.labels_
 
-    # Get the cluster labels
-    cluster_labels = kmeans.labels_
-
-    return cluster_labels
+# Visualize the clusters
+def visualize_clusters(graph, labels):
+    node_positions = nx.spring_layout(graph)
+    nx.draw(graph, pos=node_positions, node_color=labels, cmap='viridis', with_labels=True)
+    plt.show()
 
 # Example usage
-random_graph = simulate_random_graph(10, 15)
+num_nodes = 50
+num_edges = 100
 num_clusters = 3
 
-# Perform k-means clustering on the random graph
-cluster_labels = perform_kmeans_clustering(random_graph, num_clusters)
+random_graph = generate_random_graph(num_nodes, num_edges)
+labels = perform_kmeans_clustering(random_graph, num_clusters)
+visualize_clusters(random_graph, labels)
 
-# Visualization (optional)
-pos = nx.spring_layout(random_graph)
-nx.draw(random_graph, pos, node_color=cluster_labels, cmap='viridis', with_labels=True)
-plt.show()
+# Print the clustering result
+print("Node\tCluster")
+for node, label in enumerate(labels):
+    print(f"{node}\t{label}")
