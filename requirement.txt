@@ -1,4 +1,4 @@
-networkx
-matplotlib
-numpy
-scikit-learn
+networkx==3.1
+matplotlib==3.7.1
+numpy==1.24.3
+scikit-learn==1.2.2
