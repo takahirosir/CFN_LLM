@@ -1,3 +1,9 @@
+'''
+2. Data formatting: 
+Once the fixed-length vectors have been created, they can be used as input to the Large Language Model. 
+The input sequence should consist of the vectors representing the initial status of the task set. 
+These vectors can be stored in a suitable data format such as CSV.
+'''
 import pandas as pd
 
 # Create a sample dataset
