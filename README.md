@@ -4,6 +4,7 @@ cfn:v0.1是镜像名称 .是当前文件夹
 ```shell
 sudo docker build . -t cfn:v0.1
 ```
+### 运行容器：
 ```shell
 bash start.sh
 ```
@@ -14,3 +15,8 @@ bash start.sh
 cat ~/.docker/config.json
 rm  ~/.docker/config.json
 ```
+在container内部pip的东西在外部看不到，需要在内部运行
+```shell
+pip list
+```
+
