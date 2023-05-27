@@ -51,7 +51,7 @@ with open('results.csv', 'w', newline='') as csvfile:
         # 运行100次
         for i in range(100):
             num_tasks = random.randint(1, 100)
-            num_nodes = random.randint(1, 100)
+            num_nodes = random.randint(1, num_tasks)  # 确保节点数不大于任务数
             tasks = np.random.randint(1, 101, size=(num_tasks, 2))
             nodes = np.random.randint(1, 101, size=(num_nodes, 1))
             max_node_power = np.max(nodes)
@@ -99,6 +99,3 @@ for line in lines:
 with open('training_data.txt', 'w') as f:
     for item in train_data:
         f.write("%s\n" % item)
-
-# train_data现在是一个包含所有训练样本的列表，也被保存在了一个文本文件中。
-# 我们可以使用它来训练GPT-2模型，然后使用模型生成新的描述。
