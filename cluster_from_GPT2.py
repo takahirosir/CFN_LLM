@@ -46,6 +46,7 @@ with open('results.csv', 'w', newline='') as csvfile:
 
     # 创建一个描述文件
     with open('descriptions.txt', 'w') as descfile:
+        descfile.write('Round: Description\n')  # 添加表头
 
         # 运行100次
         for i in range(100):
@@ -56,13 +57,48 @@ with open('results.csv', 'w', newline='') as csvfile:
             max_node_power = np.max(nodes)
             tasks = np.array([task for task in tasks if task[0] <= max_node_power])
 
-            if len(tasks) == 0:
-                print(f"Round {i}: No tasks can be processed. Skipping this round.")
-                continue
-
             # 生成描述并写入到描述文件中
             description = generate_description(tasks, nodes)
-            descfile.write(f"Round {i}: {description}\n")
+            descfile.write(f"{i}: {description}\n")
 
             # 运行K-Medoids聚类
             run_kmedoids(tasks, nodes, i, csv_writer)
+
+# 读取并整合数据
+cluster_results = {}
+with open('results.csv', 'r') as csvfile:
+    csv_reader = csv.reader(csvfile)
+    next(csv_reader)  # 跳过表头
+    for row in csv_reader:
+        round_number = int(row[0])
+        node_number = int(row[1])
+        tasks = eval(row[2])
+        if round_number not in cluster_results:
+            cluster_results[round_number] = {}
+        cluster_results[round_number][node_number] = tasks
+
+with open('descriptions.txt', 'r') as descfile:
+    lines = descfile.readlines()
+    lines = lines[1:]  # 跳过表头
+
+train_data = []
+for line in lines:
+    round_number, description = line.strip().split(": ", 1)
+    round_number = int(round_number)
+
+    if round_number in cluster_results:
+        for node_number, tasks in cluster_results[round_number].items():
+            for task_number in tasks:
+                description += " 在这个设置下，第{}个任务被分配到了第{}个节点。".format(task_number + 1, node_number + 1)
+    else:
+        description += " 在这个设置下，无法处理任务。"
+
+    train_data.append(description)
+
+# 保存训练数据集
+with open('training_data.txt', 'w') as f:
+    for item in train_data:
+        f.write("%s\n" % item)
+
+# train_data现在是一个包含所有训练样本的列表，也被保存在了一个文本文件中。
+# 我们可以使用它来训练GPT-2模型，然后使用模型生成新的描述。
